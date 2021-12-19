@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'fuldemy.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'fuldemydb',
+        'USER': 'root',
+        'PASSWORD': 'kriMuru9336',
+        'HOST': '35.174.167.201',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
 }
 
