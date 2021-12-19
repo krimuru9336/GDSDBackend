@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'fuldemydb',
         'USER': 'root',
         'PASSWORD': 'gdsd',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }
@@ -132,5 +132,5 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS=['*', 'ec2-54-165-7-112.compute-1.amazonaws.com']
+ALLOWED_HOSTS=['*', 'localhost', '127.0.0.1', 'ec2-54-165-7-112.compute-1.amazonaws.com']
 CORS_ORIGIN_ALLOW_ALL = True
