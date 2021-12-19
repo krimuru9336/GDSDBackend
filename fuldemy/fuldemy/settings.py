@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'fuldemydb',
         'USER': 'root',
         'PASSWORD': 'gdsd',
-        'HOST': '35.171.160.123',   # Or an IP Address that your DB is hosted on
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
 }
