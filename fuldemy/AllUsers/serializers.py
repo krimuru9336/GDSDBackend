@@ -3,7 +3,32 @@ from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+
+'''
+class  MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+     def validate(self, attr):
+         data=super().validate(attr)
+         refresh = self.get_token(self.user)
+         data['refresh'] = str(refresh)
+         data['access'] = str(refresh.access_token)
+         role='None'
+         obj = FuldemyUser.objects.get(user=self.user)
+         if obj.is_student==True:
+            role='Student'
+         if obj.is_student==True:
+            role='Tutor'
+         data["role"] = role
+         return data
+'''        
+
+
+class TutorsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FuldemyUser
+        fields = ['email','first_name','last_name','address','DOB','phone_number','profile_pic','password']
 
 class RegistrationTutorSerializer(serializers.ModelSerializer):
 

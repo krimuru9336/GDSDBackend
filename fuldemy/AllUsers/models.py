@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 def user_directory_path(instance, filename):
   
@@ -123,8 +125,9 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
         
         def __str__(self):
          return self.email
+        
 
-        @property
+''' @property
         def token(self):
         
          return self._generate_jwt_token()
@@ -140,7 +143,7 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
                },settings.SECRET_KEY, algorithm='HS256')
 
           #return jwt.decode(token,settings.SECRET_KEY, algorithms='HS256')
-          return token
+          return token'''
 
 '''class user_type(models.Model):
      is_teach = models.BooleanField(default=False)
