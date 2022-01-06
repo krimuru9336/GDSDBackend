@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,UserSerializer,TutorsSerializer
+from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,UserSerializer,TutorsSerializer,RegistrationAdminSerializer
+
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser,FormParser
@@ -49,14 +50,31 @@ class RegistrationAPIView(generics.GenericAPIView):
         # your own work later on. Get familiar with it.
         if(serializer.is_valid()):
             serializer.save()
-            return Response({
-                "RequestId": str(uuid.uuid4()),
-                "Message": "User created successfully",
-                
-                "User": serializer.data}, status=status.HTTP_201_CREATED
-                )
+            return Response({"status": "success", "data": "Teacher Registered"})
+        else:
+         return Response({"status": "error", "data": serializer.errors})  
+
+class RegistrationTutorView(generics.GenericAPIView):
+    # Allow any user (authenticated or not) to hit this endpoint.
+    permission_classes = (AllowAny,)
+    serializer_class = RegistrationAdminSerializer
+
+    def post(self, request):
+        #user = request.data.get('user', {})
+        serializer = self.get_serializer(data = request.data)
+
+
+        # The create serializer, validate serializer, save serializer pattern
+        # below is common and you will see it a lot throughout this course and
+        # your own work later on. Get familiar with it.
+        if(serializer.is_valid()):
+            serializer.save()
+            return Response({"status": "success", "data": "Teacher Registered"})
+        else:
+         return Response({"status": "error", "data": serializer.errors})  
+
         
-        return Response({"status": "success", "data": "Teacher Registered"})
+        
 
 class RegistrationStudentAPIView(generics.GenericAPIView):
     # Allow any user (authenticated or not) to hit this endpoint.

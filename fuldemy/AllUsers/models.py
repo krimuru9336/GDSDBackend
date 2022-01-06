@@ -11,14 +11,20 @@ def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT / user_<id>/<filename>
     return 'posts/{filename}'.format(filename=filename)
 
+def CV_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'CV/{filename}'.format(filename=filename)
+
 
 class UserManager(BaseUserManager):
-    def create_user(self, email,first_name,last_name,address,DOB,phone_number,profile_pic, password=None):
+    def create_user(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV, password=None):
         """
         Creates and saves a User with the given email and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
+        if not CV:
+           CV=None
 
         user = self.model(
             email=self.normalize_email(email),
@@ -27,37 +33,14 @@ class UserManager(BaseUserManager):
             address=address,
             DOB=DOB,
             phone_number=phone_number,
-            profile_pic=profile_pic
+            profile_pic=profile_pic,
+            CV=CV
         )
-
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_student(self, email,first_name,last_name,address,DOB,phone_number,profile_pic, password=None):
-        """
-        Creates and saves a User with the given email and password.
-        """
-        if not email:
-            raise ValueError('Users must have an email address')
-
-        user = self.create_user(
-            email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
-            address=address,
-            DOB=DOB,
-            phone_number=phone_number,
-            profile_pic=profile_pic
-            
-        )
-        user.is_student = True
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-
-    def create_tutor(self, email,first_name,last_name,address,DOB,phone_number,profile_pic, password=None):
+    def create_student(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV=None, password=None):
         """
         Creates and saves a User with the given email and password.
         """
@@ -72,13 +55,37 @@ class UserManager(BaseUserManager):
             DOB=DOB,
             phone_number=phone_number,
             profile_pic=profile_pic,
+            CV='settings.MEDIA_ROOT/CV/Sourajyoti_Datta_CV.pdf'
             
         )
+        user.is_student = True
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+
+    def create_tutor(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV, password):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.create_user(
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            address=address,
+            DOB=DOB,
+            phone_number=phone_number,
+            profile_pic=profile_pic,
+            CV=CV
+             )
         user.is_teacher = True
         user.set_password(password)
         user.save(using=self._db)
         return user
-    def create_superuser(self, email,first_name,last_name,address,DOB,phone_number,profile_pic, password):
+    def create_superuser(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV, password):
 
       user = self.create_user(
               email=email,
@@ -88,7 +95,9 @@ class UserManager(BaseUserManager):
               DOB=DOB,
               phone_number=phone_number,
               profile_pic=profile_pic,
-              password=password)
+              password=password,
+              CV=CV
+              )
       user.is_admin = True
       user.is_staff=True
       user.is_superuser = True
@@ -112,12 +121,15 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
         is_student= models.BooleanField(default=False)
         is_teacher= models.BooleanField(default=False)
         profile_pic = models.ImageField(upload_to =user_directory_path,default='default.jpg')
+        CV = models.FileField(upload_to =CV_directory_path,default='settings.MEDIA_ROOT/CV/Sourajyoti_Datta_CV.pdf')
+        #CV = models.CharField(max_length=255,default='None',editable=True)
 
         objects = UserManager()
 
         USERNAME_FIELD="email"
 
-        REQUIRED_FIELDS=['first_name','last_name','address','DOB','phone_number','profile_pic']
+
+        REQUIRED_FIELDS=['first_name','last_name','address','DOB','phone_number','profile_pic','CV']
 
         def has_perm(self, perm, obj=None):
         # Simplest possible answer: Yes, always
@@ -125,6 +137,8 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
         
         def __str__(self):
          return self.email
+
+
         
 
 ''' @property
