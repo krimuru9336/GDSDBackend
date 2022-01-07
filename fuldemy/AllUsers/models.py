@@ -170,3 +170,17 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
          else:
              return MyUser.get_email(self.user) + " - is_teacher"'''
 
+################################################################################
+
+#Kritika's code
+
+class ActiveClasses(models.Model):
+    class_id = models.IntegerField(null=False, unique=True)
+    tutor_id = models.IntegerField(null=False, unique=True)
+    skill_id = models.IntegerField(null=False, unique=True)
+    admin_id = models.IntegerField(null=False, unique=True)
+    class_start_date = models.DateField(null=False)
+    skill_duration_left = models.IntegerField()
+    class_description = models.CharField(max_length=255)
+    rating_by_student = models.IntegerField()
+    feedback_in_words = models.CharField(max_length=1000)

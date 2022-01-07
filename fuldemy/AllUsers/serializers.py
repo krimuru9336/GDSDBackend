@@ -1,4 +1,4 @@
-from .models import FuldemyUser
+from .models import ActiveClasses, FuldemyUser
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
@@ -183,3 +183,27 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
         fields = ['profile_pic','DOB','phone_number','first_name','last_name','address','email','password'] 
+
+################################################################################
+
+#Kritika's code
+class ActiveClassesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActiveClasses
+        fields = ['id','class_id','tutor_id','skill_id','admin_id','class_start_date','skill_duration_left','class_description','rating_by_student','feedback_in_words']
+
+class ActiveClassesPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActiveClasses
+        fields = ['id','class_id','tutor_id','skill_id','admin_id','class_start_date','skill_duration_left','class_description','rating_by_student','feedback_in_words']
+
+class CreateActiveClassesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActiveClasses
+        fields = ['id','class_id','tutor_id','skill_id','admin_id','class_start_date','skill_duration_left','class_description','rating_by_student','feedback_in_words']
+
+class UpdateActiveClassesSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(validators=[])
+    class Meta:
+        model = ActiveClasses
+        fields = ['id','class_id','tutor_id','skill_id','admin_id','class_start_date','skill_duration_left','class_description','rating_by_student','feedback_in_words']

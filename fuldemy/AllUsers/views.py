@@ -5,12 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer
+from .serializers import ActiveClassesSerializer, RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer
 
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser,FormParser
-from .models import FuldemyUser
+from .models import ActiveClasses, FuldemyUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -194,4 +194,40 @@ class UserAvatarUpload(APIView):
 
 
 
+################################################################################
+#Kritika's code
 
+
+class ActiveClassesCreateView(generics.CreateAPIView):
+    queryset = ActiveClasses.objects.all()
+    serializer_class = ActiveClassesSerializer
+
+
+class ActiveClassesView(APIView):
+    def get(self,request,id=None):
+     if id: 
+         item = ActiveClasses.objects.get(id=id)
+         serializer = ActiveClassesSerializer(item)
+         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+     queryset = ActiveClasses.objects.all()
+     serializer_class = ActiveClassesSerializer(queryset,many=True)
+     return Response(serializer_class.data)
+    def post(self, request):
+        serializer = ActiveClassesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, id=None):
+        item = ActiveClasses.objects.get(id=id)
+        serializer = ActiveClassesSerializer(item, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data})
+        else:
+            return Response({"status": "error", "data": serializer.errors})
+    def delete(self, request, id=None):
+        item = generics.get_object_or_404(ActiveClasses, id=id)
+        item.delete()
+        return Response({"status": "success", "data": "Item Deleted"})

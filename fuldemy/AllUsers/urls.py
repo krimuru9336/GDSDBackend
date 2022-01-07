@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import RegistrationAPIView,RegistrationStudentAPIView,TutorsView,FilteredTutorsView,UserAvatarUpload
+from .views import ActiveClassesView, RegistrationAPIView,RegistrationStudentAPIView,TutorsView,FilteredTutorsView,UserAvatarUpload
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -17,6 +17,11 @@ urlpatterns = [
     path(r'tutor/',FilteredTutorsView.as_view()),
     path(r'user/detail',UserAvatarUpload.as_view()),
     #path('update-user', ChangePasswordView.as_view()),
+
+################################################################################
+    #Kritika's urls
+    path('reviews',ActiveClassesView.as_view()),
+    path('reviews/<int:id>',ActiveClassesView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
