@@ -5,6 +5,8 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.response import Response
+from rest_framework import status
 
 
 '''
@@ -55,6 +57,9 @@ class RegistrationTutorSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
         return FuldemyUser.objects.create_tutor(**validated_data)
+
+
+
 
 class RegistrationStudentSerializer(serializers.ModelSerializer):
 
@@ -168,7 +173,13 @@ class LoginSerializer(serializers.Serializer):
             'token': user.token
         }
 
-class UserSerializer(serializers.ModelSerializer):
+class Serializer_UpdateUser(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['profile_pic','DOB','phone_number','first_name','last_name','address','email']       
+        fields = ('DOB')
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FuldemyUser
+        fields = ['profile_pic','DOB','phone_number','first_name','last_name','address','email','password'] 

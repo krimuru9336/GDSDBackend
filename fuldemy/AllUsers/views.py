@@ -1,10 +1,11 @@
 from rest_framework import status
+from rest_framework.fields import EmailField
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,UserSerializer,TutorsSerializer,RegistrationAdminSerializer
+from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer
 
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +15,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.generics import RetrieveUpdateAPIView
 
 
 
@@ -35,6 +37,24 @@ class TutorsView(APIView):
      queryset = FuldemyUser.objects.filter(is_teacher=True).all()
      serializer_class = TutorsSerializer(queryset,many=True)
      return Response(serializer_class.data)
+
+class UserView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self,request):
+     '''if id: 
+         item = FuldemyUser.objects.get(email=id)
+         serializer = TutorsSerializer(item)
+         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)     '''
+     queryset = FuldemyUser.objects.filter(is_teacher=True).all()
+     serializer_class = TutorsSerializer(queryset,many=True)
+     return Response(serializer_class.data)
+
+
+
+
+
+
+
 class RegistrationAPIView(generics.GenericAPIView):
     # Allow any user (authenticated or not) to hit this endpoint.
     permission_classes = (AllowAny,)
@@ -141,8 +161,10 @@ class LoginView(TokenObtainPairView):
 
 
 class UserAvatarUpload(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     parsers_classes= [MultiPartParser, FormParser]
+    serializer_class = UpdateUserSerializer
+    serializer_class2=TutorsSerializer
     ''' def patch(self, request,email=None):
         item = FuldemyUser.objects.get(email=email)
         serializer = UserSerializer(item,data=request.data,partial=True)
@@ -151,11 +173,25 @@ class UserAvatarUpload(APIView):
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)''' 
-    def put(self, request):
-        serializer = UserSerializer(data=request.data,partial=True)
+    def get(self,request,*args):
+        #email=request.query_params["email"]
+         serializer = self.serializer_class(request.user)
+     # item = FuldemyUser.objects.get(email=email)
+       # serializer = TutorsSerializer(item)
+         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        serializer1 = self.serializer_class(request.user)
+        email1=serializer1.data['email']
+        #search=request.query_params["email"]
+        item = FuldemyUser.objects.get(email=email1)
+        serializer = UpdateUserSerializer(item,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+            return Response({ "data": serializer.data})
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
