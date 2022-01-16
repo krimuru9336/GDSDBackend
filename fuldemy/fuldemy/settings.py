@@ -66,6 +66,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'fuldemy.urls'
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {
