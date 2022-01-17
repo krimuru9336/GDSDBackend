@@ -29,12 +29,12 @@ class  MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class DetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['email','first_name','last_name','skills_present','skills_text']
+        fields = ['email','first_name','last_name','skills_present','skills_text','profile_pic']
 
 class DetailauthSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['email','first_name','last_name','address','DOB','phone_number','CV','skills_present','skills_text']
+        fields = ['email','first_name','last_name','address','DOB','phone_number','CV','skills_present','skills_text','profile_pic']
 
 
 class TutorsSerializer(serializers.ModelSerializer):
