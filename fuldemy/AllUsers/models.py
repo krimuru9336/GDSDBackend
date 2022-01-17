@@ -15,16 +15,39 @@ def CV_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'CV/{filename}'.format(filename=filename)
 
+class Skills(models.Model):
+    skill_name = models.CharField(null=False,max_length=30)
+    skill_type = models.CharField(null=False,max_length=30)
+    def __str__(self):
+        return self.skill_name
 
 class UserManager(BaseUserManager):
-    def create_user(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV, password=None):
+   # def create_user(self, email,first_name,last_name,address,DOB,phone_number,profile_pic=None,CV=None,skills_present=None , password=None):
+    def create_user(self, email,first_name,last_name,address,DOB,phone_number,password=None,**extra_fields):
+
         """
         Creates and saves a User with the given email and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
-        if not CV:
+        if not extra_fields.get("CV"):
            CV=None
+        else:
+         CV=extra_fields.get("CV")
+        if not extra_fields.get("profile_pic"):
+           profile_pic=None
+        else:
+          profile_pic=extra_fields.get("profile_pic")
+        if extra_fields.get("skills_present"):
+         skills_text=str(extra_fields.get("skills_present"))
+         x = skills_text.replace(">", "").split(", ")
+         str1=""
+         for i in x:
+           sub=i.split(": ")[1]
+           str1=str1+","+sub
+         skills_text = str1[1:].replace("]", "")
+        else:
+          skills_text=""
 
         user = self.model(
             email=self.normalize_email(email),
@@ -34,13 +57,19 @@ class UserManager(BaseUserManager):
             DOB=DOB,
             phone_number=phone_number,
             profile_pic=profile_pic,
-            CV=CV
+            CV=CV,
+            skills_text=skills_text
         )
         user.set_password(password)
         user.save(using=self._db)
+        if  extra_fields.get("skills_present"):
+         for i in extra_fields.get("skills_present"): 
+          user.skills_present.add(i)
+        #user.skills_present.add(skills_present[1])
+        
         return user
 
-    def create_student(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV=None, password=None):
+    def create_student(self, email,first_name,last_name,address,DOB,phone_number, password=None,**extra_fields):
         """
         Creates and saves a User with the given email and password.
         """
@@ -54,8 +83,10 @@ class UserManager(BaseUserManager):
             address=address,
             DOB=DOB,
             phone_number=phone_number,
-            profile_pic=profile_pic,
-            CV='settings.MEDIA_ROOT/CV/Sourajyoti_Datta_CV.pdf'
+            profile_pic=extra_fields.get("profile_pic"),
+            CV='settings.MEDIA_ROOT/CV/Sourajyoti_Datta_CV.pdf',
+            skills_present=extra_fields.get("skills_present")
+
             
         )
         user.is_student = True
@@ -64,7 +95,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-    def create_tutor(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV, password):
+    def create_tutor(self, email,first_name,last_name,address,DOB,phone_number,password,**extra_fields):
         """
         Creates and saves a User with the given email and password.
         """
@@ -78,14 +109,15 @@ class UserManager(BaseUserManager):
             address=address,
             DOB=DOB,
             phone_number=phone_number,
-            profile_pic=profile_pic,
-            CV=CV
+            profile_pic=extra_fields.get("profile_pic"),
+            CV=extra_fields.get("CV"),
+            skills_present=extra_fields.get("skills_present")
              )
         user.is_teacher = True
         user.set_password(password)
         user.save(using=self._db)
         return user
-    def create_superuser(self, email,first_name,last_name,address,DOB,phone_number,profile_pic,CV, password):
+    def create_superuser(self, email,first_name,last_name,address,DOB,phone_number, password,**extra_fields):
 
       user = self.create_user(
               email=email,
@@ -94,9 +126,9 @@ class UserManager(BaseUserManager):
               address=address,
               DOB=DOB,
               phone_number=phone_number,
-              profile_pic=profile_pic,
+              profile_pic=extra_fields.get("profile_pic"),
               password=password,
-              CV=CV
+              CV=extra_fields.get("CV"),
               )
       user.is_admin = True
       user.is_staff=True
@@ -123,13 +155,17 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
         profile_pic = models.ImageField(upload_to =user_directory_path,default='default.jpg')
         CV = models.FileField(upload_to =CV_directory_path,default='settings.MEDIA_ROOT/CV/Sourajyoti_Datta_CV.pdf')
         #CV = models.CharField(max_length=255,default='None',editable=True)
+        skills_present = models.ManyToManyField('AllUsers.Skills',blank=True, null=True)
+        #skills_present = models.ForeignKey(Skills, on_delete=models.CASCADE)
+        skills_text = models.CharField(max_length=255,default="")
 
         objects = UserManager()
 
         USERNAME_FIELD="email"
 
 
-        REQUIRED_FIELDS=['first_name','last_name','address','DOB','phone_number','profile_pic','CV']
+        REQUIRED_FIELDS=['first_name','last_name','address','DOB','phone_number']
+
 
         def has_perm(self, perm, obj=None):
         # Simplest possible answer: Yes, always

@@ -2,8 +2,9 @@ from django.contrib import admin
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.apps import apps
 
-from .models import FuldemyUser
+from .models import FuldemyUser,Skills
 #, user_type
 
 
@@ -26,6 +27,8 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ('groups', 'user_permissions',)
 
 
-admin.site.register(FuldemyUser, UserAdmin)
+#admin.site.register(FuldemyUser, UserAdmin)
 #admin.site.register(user_type)
+
+admin.site.register(apps.all_models['AllUsers'].values())
 

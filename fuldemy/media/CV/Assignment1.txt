@@ -1,0 +1,360 @@
+ show tables;
++--------------------+
+| Tables_in_loudacre |
++--------------------+
+| accountdevice      |
+| accounts           |
+| basestations       |
+| calllog            |
+| customerservicerep |
+| device             |
+| knowledgebase      |
+| mostactivestations |
+| toparticles        |
+| webpage            |
+| websitehit         |
++--------------------+
+11 rows in set (0.00 sec)
+
+
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--table accountdevice \
+--target-dir /loudacre/accountdevice \
+--null-non-string '\\N'
+
+
+use loudacre;
+
+select * from accountdevice limit 10;
+
+select count(*) from accountdevice;--194764
+
+select count(*) from default.accountdevice;
+
+
+
+describe accountdevice;
+
+drop table default.accountdevice;
+
+CREATE EXTERNAL TABLE default.accountdevice(
+id     int,         
+account_id   int,     
+device_id  int,      
+activation_date   timestamp ,
+account_device_id STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/loudacre/accountdevice'; 
+--------------------------------------------------------------------------------------------------------------------------
+
+
+
+select * from calllog limit 10;
+
+
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--table calllog \
+--target-dir /loudacre/calllog \
+--null-non-string '\\N' \
+--fields-terminated-by "|" 
+
+
+
+l> describe calllog;
++-------------------+--------------+------+-----+---------+-------+
+| Field             | Type         | Null | Key | Default | Extra |
++-------------------+--------------+------+-----+---------+-------+
+| call_num          | varchar(255) | NO   | PRI | NULL    |       |
+| start_time        | datetime     | NO   |     | NULL    |       |
+| end_time          | datetime     | NO   |     | NULL    |       |
+| status            | varchar(255) | NO   |     | NULL    |       |
+| from_phone_number | varchar(255) | NO   |     | NULL    |       |
+| to_phone_number   | varchar(255) | NO   |     | NULL    |       |
++-------------------+--------------+------+-----+---------+-------+
+
+drop table default.calllog;
+
+
+CREATE EXTERNAL TABLE default.calllog(
+call_num       STRING,
+start_time    timestamp,
+end_time      timestamp , 
+status         STRING,
+from_phone_number STRING,
+to_phone_number   STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY "|"
+STORED AS textfile
+LOCATION '/loudacre/calllog'; 
+
+
+select count(*) from default.calllog;--823742
+
+select count(*) from calllog;--823741
+
+
+select count(*) from default.calllog where from_phone_number is null;
+
+select count(*) from default.calllog where to_phone_number is null;
+
+
+select * from default.calllog limit 10;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--table customerservicerep \
+--target-dir /loudacre/customerservicerep \
+--null-non-string '\\N'
+
+
+
+describe customerservicerep;
+
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| acct_num | int(11)      | NO   | PRI | NULL    | auto_increment |
+| cs_name  | varchar(255) | NO   |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
+
+
+CREATE EXTERNAL TABLE default.customerservicerep(
+acct_num     int,         
+cs_name STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/loudacre/customerservicerep'; 
+
+
+select count(*) from default.customerservicerep;--208
+
+select count(*) from customerservicerep;--208
+
+-----------------------------------------------------------------------------------------------------------------------
+
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--as-parquetfile \
+--table knowledgebase \
+--target-dir /loudacre/knowledgebase \
+--null-non-string '\\N' \
+--null-string '\\N' \
+--fields-terminated-by "|" \
+--lines-terminated-by "///\r" 
+
+
+ALTER TABLE table set SERDEPROPERTIES ('serialization.null.format' = "");
+
+
+use loudacre;
+
+describe knowledgebase;
+
+
+| Field            | Type         | Null | Key | Default | Extra          |
++------------------+--------------+------+-----+---------+----------------+
+| kb_num           | int(11)      | NO   | PRI | NULL    | auto_increment |
+| kb_docid         | varchar(255) | NO   |     | NULL    |                |
+| kb_content       | longtext     | NO   |     | NULL    |                |
+| device_id        | int(11)      | NO   | MUL | NULL    |                |
+| associated_files | varchar(255) | NO   |     | NULL    |                |
+| article_type     | varchar(255) | NO   |     | NULL    |                |
++------------------+--------------+------+-----+---------+----------------+
+
+
+
+drop table default.knowledgebase;
+
+CREATE EXTERNAL TABLE default.knowledgebase(
+kb_num     int,   
+kb_docid     string,         
+kb_content     string,         
+device_id     int,         
+associated_files     string,         
+article_type     string)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY "|"
+STORED AS parquet
+LOCATION '/loudacre/knowledgebase'; 
+
+
+select count(*) from default.knowledgebase;  --300
+
+select count(*) from knowledgebase;--300
+
+
+select * from knowledgebase limit 5;
+
+
+
+ 
+-----------------------------------------------------------------------------------------------------------
+
+describe mostactivestations;
+
+select * from mostactivestations limit 10;
+
+
+
+CREATE EXTERNAL TABLE default.mostactivestations(
+most_active_station_num     int,   
+station_num     int,         
+activity     int,        
+activity_time STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/loudacre/mostactivestations'; 
+
+
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--table mostactivestations \
+--target-dir /loudacre/mostactivestations \
+--null-non-string '\\N'
+
+
++-------------------------+--------------+------+-----+---------+----------------+
+| Field                   | Type         | Null | Key | Default | Extra          |
++-------------------------+--------------+------+-----+---------+----------------+
+| most_active_station_num | int(11)      | NO   | PRI | NULL    | auto_increment |
+| station_num             | int(11)      | NO   |     | NULL    |                |
+| activity                | int(11)      | NO   |     | NULL    |                |
+| activity_time           | varchar(255) | NO   |     | NULL    |                |
++-------------------------+--------------+------+-----+---------+----------------+
+
+
+
+select count(*) from mostactivestations;--0
+
+select count(*) from default.mostactivestations;--0
+-----------------------------------------------------------------------------------------------------------------------------------------------
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--table toparticles \
+--target-dir /loudacre/toparticles \
+--null-non-string '\\N'
+
+
+select * from toparticles limit 10;
+
+
+describe toparticles;
+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| id    | varchar(255) | NO   | PRI | NULL    |       |
+| nreqs | int(11)      | NO   |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+
+
+CREATE EXTERNAL TABLE default.toparticles(
+id     string,   
+nreqs     int      
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/loudacre/toparticles'; 
+
+
+select count(*) from toparticles;--0
+
+select count(*) from default.toparticles;--0
+
+------------------------------------------------------------------------------------------------------------------------
+
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--table websitehit \
+--target-dir /loudacre/websitehit \
+--null-non-string '\\N'
+
+
+describe websitehit;
+
++-------------------------+----------+------+-----+---------+----------------+
+| Field                   | Type     | Null | Key | Default | Extra          |
++-------------------------+----------+------+-----+---------+----------------+
+| hit_num                 | int(11)  | NO   | PRI | NULL    | auto_increment |
+| hit_time                | datetime | NO   |     | NULL    |                |
+| web_page_id             | int(11)  | YES  | MUL | NULL    |                |
+| knowledge_base_id       | int(11)  | YES  | MUL | NULL    |                |
+| customer_service_rep_id | int(11)  | YES  | MUL | NULL    |                |
+| account_id              | int(11)  | YES  | MUL | NULL    |                |
+| device_id               | int(11)  | YES  | MUL | NULL    |                |
++-------------------------+----------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+
+CREATE EXTERNAL TABLE default.websitehit(
+hit_num     int  ,
+hit_time     timestamp  ,
+web_page_id     int  ,
+knowledge_base_id     int  ,
+customer_service_rep_id     int  ,
+account_id     int  ,
+device_id     int  
+   
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/loudacre/websitehit'; 
+
+select count(*) from websitehit;--474353
+
+select count(*) from default.websitehit;--474353
+
+----------------------------------------------------------------------------------------------------------------------------
+drop table default.device;
+
+
+select * from device limit 10;
+
+
+sqoop import \
+--connect jdbc:mysql://localhost/loudacre \
+--username training --password training \
+--table device \
+--target-dir /loudacre/device \
+--null-non-string '\\N'
+
+
+CREATE EXTERNAL TABLE default.device(
+device_num     int  ,
+release_dt     timestamp  ,
+device_name     string  ,
+device_type     string  
+
+   
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/loudacre/device'; 
+
+
+select count(*) from default.device;--50
+
+select count(*) from device;

@@ -5,12 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import ActiveClassesSerializer, RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer
+from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer
 
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser,FormParser
-from .models import ActiveClasses, FuldemyUser
+from .models import FuldemyUser,ActiveClasses
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -21,22 +21,28 @@ from rest_framework.generics import RetrieveUpdateAPIView
 
 class FilteredTutorsView(generics.ListAPIView):
      permission_classes = (AllowAny,)
-     queryset = FuldemyUser.objects.all()
-     serializer_class = TutorsSerializer
+     queryset = FuldemyUser.objects.filter(is_teacher=True).all()
+     serializer_class = DetailSerializer
      filter_backends = [SearchFilter, OrderingFilter]
-     search_fields = ['email', 'first_name','last_name']
+     search_fields = [ 'first_name','last_name','skills_text']
 
+class TutorsView(generics.ListAPIView):
+     permission_classes = (IsAuthenticated,)
+     queryset = FuldemyUser.objects.filter(is_teacher=True).all()
+     serializer_class = DetailauthSerializer
+     filter_backends = [SearchFilter, OrderingFilter]
+     search_fields = [ 'first_name','last_name','skills_text','address']
 
-class TutorsView(APIView):
-    permission_classes = (IsAuthenticated,)
-    def get(self,request):
+#class TutorsView(APIView):
+    #permission_classes = (IsAuthenticated,)
+   # def get(self,request):
      '''if id: 
          item = FuldemyUser.objects.get(email=id)
          serializer = TutorsSerializer(item)
-         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)     '''
-     queryset = FuldemyUser.objects.filter(is_teacher=True).all()
-     serializer_class = TutorsSerializer(queryset,many=True)
-     return Response(serializer_class.data)
+         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)'''
+    ## queryset = FuldemyUser.objects.filter(is_teacher=True).all()
+    ## serializer_class = DetailauthSerializer(queryset,many=True)
+    ## return Response(serializer_class.data)
 
 class UserView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -192,8 +198,6 @@ class UserAvatarUpload(APIView):
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-
-
 ################################################################################
 #Kritika's code
 
@@ -231,3 +235,4 @@ class ActiveClassesView(APIView):
         item = generics.get_object_or_404(ActiveClasses, id=id)
         item.delete()
         return Response({"status": "success", "data": "Item Deleted"})
+

@@ -1,4 +1,4 @@
-from .models import ActiveClasses, FuldemyUser
+from .models import FuldemyUser,ActiveClasses
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
@@ -26,11 +26,21 @@ class  MyTokenObtainPairSerializer(TokenObtainPairSerializer):
          return data
 '''        
 
+class DetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FuldemyUser
+        fields = ['email','first_name','last_name','skills_present','skills_text']
+
+class DetailauthSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FuldemyUser
+        fields = ['email','first_name','last_name','address','DOB','phone_number','CV','skills_present','skills_text']
+
 
 class TutorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['email','first_name','last_name','address','DOB','phone_number','profile_pic','password','CV']
+        fields = ['email','first_name','last_name','address','DOB','phone_number','password','CV','skills_present','skills_text']
 
 class RegistrationTutorSerializer(serializers.ModelSerializer):
 
@@ -52,7 +62,7 @@ class RegistrationTutorSerializer(serializers.ModelSerializer):
         model = FuldemyUser
         # List all of the fields that could possibly be included in a request
         # or response, including fields specified explicitly above.
-        fields = ['email','first_name','last_name','address','DOB','phone_number','profile_pic','password','CV','token']
+        fields = ['email','first_name','last_name','address','DOB','phone_number','profile_pic','password','CV','token','skills_present']
 
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
@@ -182,7 +192,7 @@ class Serializer_UpdateUser(serializers.ModelSerializer):
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['profile_pic','DOB','phone_number','first_name','last_name','address','email','password'] 
+        fields = ['profile_pic','DOB','phone_number','first_name','last_name','address','email','password','skills_present','skills_text','CV','profile_pic'] 
 
 ################################################################################
 
