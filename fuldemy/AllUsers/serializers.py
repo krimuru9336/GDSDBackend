@@ -1,4 +1,4 @@
-from .models import FuldemyUser,ActiveClasses
+from .models import FuldemyUser,ActiveClasses,Skills
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
@@ -26,6 +26,11 @@ class  MyTokenObtainPairSerializer(TokenObtainPairSerializer):
          return data
 '''        
 
+
+class SkillsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skills
+        fields = ['id','skill_name','skill_type']
 class DetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser

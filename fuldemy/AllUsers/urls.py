@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import RegistrationAPIView,RegistrationStudentAPIView,TutorsView,FilteredTutorsView,UserAvatarUpload,ActiveClassesView
+from .views import RegistrationAPIView,RegistrationStudentAPIView,TutorsView,FilteredTutorsView,UserAvatarUpload,ActiveClassesView,SkillsView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -17,7 +17,8 @@ urlpatterns = [
     path(r'tutor/',FilteredTutorsView.as_view()),
     path(r'user/detail',UserAvatarUpload.as_view()),
     #path('update-user', ChangePasswordView.as_view()),
-
+     path('skills',SkillsView.as_view()),
+   path('skills/<int:id>',SkillsView.as_view()),
     ################################################################################
     #Kritika's urls
     path('reviews',ActiveClassesView.as_view()),

@@ -5,12 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer
+from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer,SkillsSerializer
 
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser,FormParser
-from .models import FuldemyUser,ActiveClasses
+from .models import FuldemyUser,ActiveClasses,Skills
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,6 +18,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.generics import RetrieveUpdateAPIView
 
 
+class SkillsView(APIView):
+    def get(self,request,id=None):
+     if id: 
+         item = Skills.objects.get(id=id)
+         serializer = SkillsSerializer(item)
+         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+     queryset = Skills.objects.all()
+     serializer_class = SkillsSerializer(queryset,many=True)
+     return Response(serializer_class.data)
 
 class FilteredTutorsView(generics.ListAPIView):
      permission_classes = (AllowAny,)
@@ -76,7 +85,7 @@ class RegistrationAPIView(generics.GenericAPIView):
         # your own work later on. Get familiar with it.
         if(serializer.is_valid()):
             serializer.save()
-            return Response({"status": "success", "data": "Teacher Registered"})
+            return Response({"status": "success", "data": serializer.data})
         else:
          return Response({"status": "error", "data": serializer.errors})  
 
@@ -95,7 +104,7 @@ class RegistrationTutorView(generics.GenericAPIView):
         # your own work later on. Get familiar with it.
         if(serializer.is_valid()):
             serializer.save()
-            return Response({"status": "success", "data": "Teacher Registered"})
+            return Response({"status": "success", "data": serializer.data})
         else:
          return Response({"status": "error", "data": serializer.errors})  
 
