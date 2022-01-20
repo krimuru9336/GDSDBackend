@@ -7,6 +7,12 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.serializers import ModelSerializer, CharField
+from .models import MessageModel
+from django.shortcuts import get_object_or_404
+
+
+
 
 
 '''
@@ -199,7 +205,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         model = FuldemyUser
         fields = ['profile_pic','DOB','phone_number','first_name','last_name','address','email','password','skills_present','skills_text','CV','profile_pic'] 
 
-################################################################################
+################################Krithika################################################
 
 #Kritika's code
 class ActiveClassesSerializer(serializers.ModelSerializer):
@@ -222,3 +228,30 @@ class UpdateActiveClassesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActiveClasses
         fields = ['id','class_id','tutor_id','skill_id','admin_id','class_start_date','skill_duration_left','class_description','rating_by_student','feedback_in_words']
+
+
+################################  Syed   ################################################
+
+class MessageModelSerializer(ModelSerializer):
+    user = CharField(source='user.email', read_only=True)
+    recipient = CharField(source='recipient.email')
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        recipient = get_object_or_404(
+            FuldemyUser, email=validated_data['recipient']['email'])
+        msg = MessageModel(recipient=recipient,
+                           body=validated_data['body'],
+                           user=user)
+        msg.save()
+        return msg
+
+    class Meta:
+        model = MessageModel
+        fields = ('id', 'user', 'recipient', 'timestamp', 'body')
+
+
+class UserModelSerializer(ModelSerializer):
+    class Meta:
+        model = FuldemyUser
+        fields = ('email',)

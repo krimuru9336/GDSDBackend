@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+from os.path import join
 from pathlib import Path
 from pathlib import Path
 import datetime
@@ -20,7 +20,8 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR_CHAT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = BASE_DIR_CHAT
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -32,6 +33,7 @@ SECRET_KEY = 'django-insecure-&#ey1b&9zmpj^5^!86kfntni7c1+i7(u(ra1!6bv##_8hr)dko
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
 
 AUTH_USER_MODEL = 'AllUsers.FuldemyUser'
 # Application definition
@@ -71,7 +73,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [join(BASE_DIR_CHAT, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -181,4 +183,44 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+############  chat syed code ####################################
+MESSAGES_TO_LOAD = 15
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/dev/howto/static-files/
+
+# Collect static files here
+STATIC_ROOT = join(PROJECT_ROOT, 'run', 'static_root')
+
+# Collect media files here
+MEDIA_ROOT = join(PROJECT_ROOT, 'run', 'media_root')
+MEDIA_URL = '/media/'
+
+# look for static assets here
+STATICFILES_DIRS = [
+    join(PROJECT_ROOT, 'static'),
+]
+
+STATIC_URL = '/static/'
+ADMIN_MEDIA_PREFIX = '/static/admin/'
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
+
+ALLOWED_HOSTS = ['*']
+
+# Import local_settings.py
+try:
+    from local_settings import *
+except ImportError:
+    pass
+
+ASGI_APPLICATION = 'chat.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}

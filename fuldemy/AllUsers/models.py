@@ -4,8 +4,13 @@ import jwt
 from datetime import datetime, timedelta
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from django.db.models import (Model, TextField, DateTimeField, ForeignKey,
+                              CASCADE)
 
 
+#######Debarati Code##################################################
 def user_directory_path(instance, filename):
   
     # file will be uploaded to MEDIA_ROOT / user_<id>/<filename>
@@ -211,6 +216,8 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
 #Kritika's code
 
 class ActiveClasses(models.Model):
+
+
     class_id = models.IntegerField(null=False, unique=True)
     tutor_id = models.IntegerField(null=False, unique=True)
     skill_id = models.IntegerField(null=False, unique=True)
@@ -220,3 +227,62 @@ class ActiveClasses(models.Model):
     class_description = models.CharField(max_length=255)
     rating_by_student = models.IntegerField()
     feedback_in_words = models.CharField(max_length=1000)
+
+####################Syed Chat code#########################################################
+class MessageModel(Model):
+    """
+    This class represents a chat message. It has a owner (user), timestamp and
+    the message body.
+
+    """
+    user = ForeignKey(FuldemyUser, on_delete=CASCADE, verbose_name='user',
+                      related_name='from_user', db_index=True)
+    recipient = ForeignKey(FuldemyUser, on_delete=CASCADE, verbose_name='recipient',
+                           related_name='to_user', db_index=True)
+    timestamp = DateTimeField('timestamp', auto_now_add=True, editable=False,
+                              db_index=True)
+    body = TextField('body')
+
+    def __str__(self):
+        return str(self.id)
+
+    def characters(self):
+        """
+        Toy function to count body characters.
+        :return: body's char number
+        """
+        return len(self.body)
+
+    def notify_ws_clients(self):
+        """
+        Inform client there is a new message.
+        """
+        notification = {
+            'type': 'recieve_group_message',
+            'message': '{}'.format(self.id)
+        }
+
+        channel_layer = get_channel_layer()
+
+
+        async_to_sync(channel_layer.group_send)("{}".format(self.user.id), notification)
+        async_to_sync(channel_layer.group_send)("{}".format(self.recipient.id), notification)
+
+    def save(self, *args, **kwargs):
+        """
+        Trims white spaces, saves the message and notifies the recipient via WS
+        if the message is new.
+        """
+        new = self.id
+        self.body = self.body.strip()  # Trimming whitespaces from the body
+        super(MessageModel, self).save(*args, **kwargs)
+        if new is None:
+            self.notify_ws_clients()
+
+    # Meta
+    class Meta:
+        app_label = 'AllUsers'
+        verbose_name = 'message'
+        verbose_name_plural = 'messages'
+        ordering = ('-timestamp',)
+
