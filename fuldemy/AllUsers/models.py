@@ -216,17 +216,18 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
 #Kritika's code
 
 class ActiveClasses(models.Model):
+    class_id = models.IntegerField(null=False, unique=True) #primary key
+    tutor_id = models.IntegerField(null=False) #Comes from FuldemyUser table
+    student_id =  models.IntegerField(null=False) #Comes from FuldemyUser table 
+    skill_id = models.IntegerField(null=False)  #Comes from FuldemyUser table
+    class_start_date = models.DateField(null=False) #Add current date
+    #skill_duration_left = models.IntegerField() #Comes from Skills table
+    class_review = models.CharField(max_length=255, null=True) #Updated from UI
+    rating_by_student = models.IntegerField(null=True) #Updated from UI
+    feedback_in_words = models.CharField(max_length=1000, null=True) #Updated from UI
 
 
-    class_id = models.IntegerField(null=False, unique=True)
-    tutor_id = models.IntegerField(null=False, unique=True)
-    skill_id = models.IntegerField(null=False, unique=True)
-    admin_id = models.IntegerField(null=False, unique=True)
-    class_start_date = models.DateField(null=False)
-    skill_duration_left = models.IntegerField()
-    class_description = models.CharField(max_length=255)
-    rating_by_student = models.IntegerField()
-    feedback_in_words = models.CharField(max_length=1000)
+
 
 ####################Syed Chat code#########################################################
 class MessageModel(Model):

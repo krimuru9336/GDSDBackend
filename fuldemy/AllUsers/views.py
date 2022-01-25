@@ -233,7 +233,7 @@ class ActiveClassesView(APIView):
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
     def patch(self, request, id=None):
-        item = ActiveClasses.objects.get(id=id)
+        item = ActiveClasses.objects.get(class_id=id)
         serializer = ActiveClassesSerializer(item, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
