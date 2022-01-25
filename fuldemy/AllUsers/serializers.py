@@ -73,7 +73,7 @@ class RegistrationTutorSerializer(serializers.ModelSerializer):
         model = FuldemyUser
         # List all of the fields that could possibly be included in a request
         # or response, including fields specified explicitly above.
-        fields = ['email','first_name','last_name','address','DOB','phone_number','profile_pic','password','CV','token','skills_present']
+        fields = ['id','email','first_name','last_name','address','DOB','phone_number','profile_pic','password','CV','token','skills_present']
 
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
@@ -102,7 +102,7 @@ class RegistrationStudentSerializer(serializers.ModelSerializer):
         model = FuldemyUser
         # List all of the fields that could possibly be included in a request
         # or response, including fields specified explicitly above.
-        fields = ['email','first_name','last_name','address','DOB','phone_number', 'password','token','profile_pic']
+        fields = ['id','email','first_name','last_name','address','DOB','phone_number', 'password','token','profile_pic']
 
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
