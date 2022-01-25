@@ -254,4 +254,4 @@ class MessageModelSerializer(ModelSerializer):
 class UserModelSerializer(ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ('email',)
+        fields = ('email','first_name', 'last_name', 'id', 'profile_pic')
