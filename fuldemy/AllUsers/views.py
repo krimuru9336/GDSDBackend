@@ -30,7 +30,7 @@ class SkillsView(APIView):
 
 class FilteredTutorsView(generics.ListAPIView):
      permission_classes = (AllowAny,)
-     queryset = FuldemyUser.objects.filter(is_teacher=True).all()
+     queryset = FuldemyUser.objects.filter(is_active_teacher=True).all()
      serializer_class = DetailSerializer
      filter_backends = [SearchFilter, OrderingFilter]
      search_fields = [ 'first_name','last_name','skills_text']
