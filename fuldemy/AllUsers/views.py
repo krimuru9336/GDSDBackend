@@ -37,7 +37,7 @@ class FilteredTutorsView(generics.ListAPIView):
 
 class TutorsView(generics.ListAPIView):
      permission_classes = (IsAuthenticated,)
-     queryset = FuldemyUser.objects.filter(is_teacher=True).all()
+     queryset = FuldemyUser.objects.filter(is_active_teacher=True).all()
      serializer_class = DetailauthSerializer
      filter_backends = [SearchFilter, OrderingFilter]
      search_fields = [ 'first_name','last_name','skills_text','address']
@@ -60,7 +60,7 @@ class UserView(APIView):
          item = FuldemyUser.objects.get(email=id)
          serializer = TutorsSerializer(item)
          return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)     '''
-     queryset = FuldemyUser.objects.filter(is_teacher=True).all()
+     queryset = FuldemyUser.objects.filter(is_active_teacher=True).all()
      serializer_class = TutorsSerializer(queryset,many=True)
      return Response(serializer_class.data)
 
