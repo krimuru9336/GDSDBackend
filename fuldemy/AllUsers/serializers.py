@@ -213,7 +213,7 @@ class ActiveClassesSerializer(serializers.ModelSerializer):
         model = ActiveClasses
         fields = ['id','class_id','tutor_id','student_id','skill_id','class_start_date','class_review','rating_by_student','feedback_in_words']
 
-class ActiveClassesPostSerializer(serializers.ModelSerializer):
+class GetByTutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActiveClasses
         fields =  ['id','class_id','tutor_id','student_id','skill_id','class_start_date','class_review','rating_by_student','feedback_in_words']

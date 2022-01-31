@@ -217,7 +217,7 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
 #Kritika's code
 
 class ActiveClasses(models.Model):
-    class_id = models.IntegerField(null=False, unique=True) #primary key
+    class_id = models.CharField(null=False, unique=True, max_length=30) #primary key
     tutor_id = models.IntegerField(null=False) #Comes from FuldemyUser table
     student_id =  models.IntegerField(null=False) #Comes from FuldemyUser table 
     skill_id = models.IntegerField(null=False)  #Comes from FuldemyUser table

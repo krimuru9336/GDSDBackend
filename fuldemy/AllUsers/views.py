@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer,SkillsSerializer
+from .serializers import GetByTutorSerializer, RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer,SkillsSerializer
 
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
@@ -217,14 +217,15 @@ class ActiveClassesCreateView(generics.CreateAPIView):
 
 
 class ActiveClassesView(APIView):
-    def get(self,request,id=None):
-     if id: 
-         item = ActiveClasses.objects.get(id=id)
-         serializer = ActiveClassesSerializer(item)
-         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
-     queryset = ActiveClasses.objects.all()
-     serializer_class = ActiveClassesSerializer(queryset,many=True)
-     return Response(serializer_class.data)
+    def get(self,request, id=None):
+        if id: 
+            item = ActiveClasses.objects.get(class_id=id)
+            serializer = ActiveClassesSerializer(item)
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        queryset = ActiveClasses.objects.all()
+        serializer_class = ActiveClassesSerializer(queryset,many=True)
+        return Response(serializer_class.data)
+
     def post(self, request):
         serializer = ActiveClassesSerializer(data=request.data)
         if serializer.is_valid():
@@ -245,3 +246,9 @@ class ActiveClassesView(APIView):
         item.delete()
         return Response({"status": "success", "data": "Item Deleted"})
 
+class GetActiveClassesByTutor (APIView):
+    def get(self,request, tutor_id=None):
+        queryset = ActiveClasses.objects.filter(tutor_id=tutor_id)
+        serializer_class_set = ActiveClassesSerializer(queryset,many=True)
+        print(serializer_class_set.data)
+        return Response(serializer_class_set.data)
