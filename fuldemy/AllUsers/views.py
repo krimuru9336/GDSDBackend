@@ -242,7 +242,7 @@ class ActiveClassesView(APIView):
         else:
             return Response({"status": "error", "data": serializer.errors})
     def delete(self, request, id=None):
-        item = generics.get_object_or_404(ActiveClasses, id=id)
+        item = generics.get_object_or_404(ActiveClasses, class_id=id)
         item.delete()
         return Response({"status": "success", "data": "Item Deleted"})
 
