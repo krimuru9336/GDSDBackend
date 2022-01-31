@@ -159,7 +159,7 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
         is_teacher= models.BooleanField(default=False)
         is_active_teacher= models.BooleanField(default=False)
         profile_pic = models.ImageField(upload_to =user_directory_path,default='default.jpg',blank=True)
-        CV = models.FileField(upload_to =CV_directory_path,default='settings.MEDIA_ROOT/CV/Sourajyoti_Datta_CV.pdf')
+        CV = models.FileField(upload_to =CV_directory_path,default='settings.MEDIA_ROOT/CV/Sourajyoti_Datta_CV.pdf',blank=True)
         #CV = models.CharField(max_length=255,default='None',editable=True)
         skills_present = models.ManyToManyField('AllUsers.Skills',blank=True, null=True)
         #skills_present = models.ForeignKey(Skills, on_delete=models.CASCADE)
