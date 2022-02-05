@@ -261,9 +261,18 @@ class AdminCVCheckView(APIView):
     #serializer_class = UpdateUserSerializer
     #serializer_class2=TutorsSerializer
     def get(self,request,*args):
-        #email=request.query_params["email"]
-        queryset = FuldemyUser.objects.filter(is_teacher=True).filter(is_active_teacher=False).all()
-        serializer_class = AdminSerializer(queryset,many=True)
+        if request.query_params["email"]:
+         email=request.query_params["email"]
+         queryset = FuldemyUser.objects.get(email=email)
+         serializer_class = AdminSerializer(queryset)
+         if serializer_class.is_valid():
+          return Response({"status": "success", "data": serializer_class.data}, status=status.HTTP_200_OK)
+         else:
+          return Response({"status": "error", "data": serializer_class.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+          queryset = FuldemyUser.objects.filter(is_teacher=True).filter(is_active_teacher=False).all()
+          serializer_class = AdminSerializer(queryset,many=True)
      # item = FuldemyUser.objects.get(email=email)
        # serializer = TutorsSerializer(item)
         return Response({"status": "success", "data": serializer_class.data}, status=status.HTTP_200_OK)
