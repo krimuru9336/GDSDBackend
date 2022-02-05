@@ -34,6 +34,7 @@ urlpatterns = [
     path('skills',SkillsView.as_view()),
     path('skills/<int:id>',SkillsView.as_view()),
     path(r'checkCV/',AdminCVCheckView.as_view()),
+    path(r'checkCV/<int:id>',AdminCVCheckView.as_view()),
 
     ####################### Chat #########################################################
     path('', login_required(
@@ -47,4 +48,4 @@ urlpatterns = [
 
 ]
 
-#urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

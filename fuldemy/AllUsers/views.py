@@ -260,25 +260,23 @@ class AdminCVCheckView(APIView):
     parsers_classes= [MultiPartParser, FormParser]
     #serializer_class = UpdateUserSerializer
     #serializer_class2=TutorsSerializer
-    def get(self,request,*args):
-        if request.query_params["email"]:
-         email=request.query_params["email"]
-         queryset = FuldemyUser.objects.get(email=email)
-         serializer_class = AdminSerializer(queryset)
-         if serializer_class.is_valid():
+    def get(self,request,id=None):
+        #if request.query_params["email"]:        
+         #email=request.query_params["email"]
+         if id:
+          queryset = FuldemyUser.objects.filter(is_teacher=True).filter(is_active_teacher=False).get(id=id)
+          serializer_class = AdminSerializer(queryset)
+          #if serializer_class.is_valid():
           return Response({"status": "success", "data": serializer_class.data}, status=status.HTTP_200_OK)
-         else:
-          return Response({"status": "error", "data": serializer_class.errors}, status=status.HTTP_400_BAD_REQUEST)
+          #else:
+           #return Response({"status": "error", "data": serializer_class.errors}, status=status.HTTP_400_BAD_REQUEST)
+         queryset = FuldemyUser.objects.filter(is_teacher=True).filter(is_active_teacher=False).all()
+         serializer_class2 = AdminSerializer(queryset,many=True)
+         return Response({"status": "success", "data": serializer_class2.data}, status=status.HTTP_200_OK)
 
-        else:
-          queryset = FuldemyUser.objects.filter(is_teacher=True).filter(is_active_teacher=False).all()
-          serializer_class = AdminSerializer(queryset,many=True)
-     # item = FuldemyUser.objects.get(email=email)
-       # serializer = TutorsSerializer(item)
-        return Response({"status": "success", "data": serializer_class.data}, status=status.HTTP_200_OK)
-    def patch(self, request):
-        email=request.query_params["email"]
-        queryset1 = FuldemyUser.objects.get(email=email)
+    def patch(self, request,id=None):
+        #email=request.query_params["email"]
+        queryset1 = FuldemyUser.objects.get(id=id)
         serializer = AdminUpdSerializer(queryset1,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
