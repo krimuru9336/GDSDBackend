@@ -32,7 +32,18 @@ GET by tutor_id = http://127.0.0.1:8000/api/reviews/getByTutor/2
 DELETE by class_id = http://127.0.0.1:8000/api/reviews/1_2
 
   give class_id in URL
+  
+  ADMIN rest api
 
+Get all tutors with is_active_tutor field as false = http://127.0.0.1:8000/api/checkCV/
+
+Patch by email = http://127.0.0.1:8000/api/checkCV/?email=kritutor1@hs-fulda.de
+
+give email in URL ?email=arya1@hs-fulda.de
+
+GET by email = http://127.0.0.1:8000/api/checkCV/?email=arya1@hs-fulda.de
+
+give email in URL ?email=arya1@hs-fulda.de
 
 
 ## Download and install
