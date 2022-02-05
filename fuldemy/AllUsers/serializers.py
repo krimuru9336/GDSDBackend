@@ -255,3 +255,14 @@ class UserModelSerializer(ModelSerializer):
     class Meta:
         model = FuldemyUser
         fields = ('email','first_name', 'last_name', 'id', 'profile_pic')
+
+
+#######################################Debarati Admin Part##################################################   
+class AdminSerializer(ModelSerializer):
+    class Meta:
+        model = FuldemyUser
+        fields = ('email', 'id', 'CV','is_teacher','is_active_teacher')
+class AdminUpdSerializer(ModelSerializer):
+    class Meta:
+        model = FuldemyUser
+        fields = ('email', 'id', 'CV','is_teacher','is_active_teacher')    

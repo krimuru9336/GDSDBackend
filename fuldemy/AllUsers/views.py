@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import GetByTutorSerializer, RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer,SkillsSerializer
+from .serializers import GetByTutorSerializer, RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer,SkillsSerializer,AdminSerializer,AdminUpdSerializer
 
 from rest_framework import permissions
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.parsers import MultiPartParser,FormParser
 from .models import FuldemyUser,ActiveClasses,Skills
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -252,3 +252,28 @@ class GetActiveClassesByTutor (APIView):
         serializer_class_set = ActiveClassesSerializer(queryset,many=True)
         print(serializer_class_set.data)
         return Response(serializer_class_set.data)
+
+###############################Admin #####################################################
+
+class AdminCVCheckView(APIView):
+    permission_classes = (IsAdminUser,)
+    parsers_classes= [MultiPartParser, FormParser]
+    #serializer_class = UpdateUserSerializer
+    #serializer_class2=TutorsSerializer
+    def get(self,request,*args):
+        #email=request.query_params["email"]
+        queryset = FuldemyUser.objects.filter(is_teacher=True).filter(is_active_teacher=False).all()
+        serializer_class = AdminSerializer(queryset,many=True)
+     # item = FuldemyUser.objects.get(email=email)
+       # serializer = TutorsSerializer(item)
+        return Response({"status": "success", "data": serializer_class.data}, status=status.HTTP_200_OK)
+    def patch(self, request):
+        email=request.query_params["email"]
+        queryset1 = FuldemyUser.objects.get(email=email)
+        serializer = AdminUpdSerializer(queryset1,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({ "data": serializer.data})
+        else:
+            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
