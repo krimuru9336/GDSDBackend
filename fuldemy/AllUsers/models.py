@@ -212,6 +212,39 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
          else:
              return MyUser.get_email(self.user) + " - is_teacher"'''
 
+class TimeTable(models.Model):
+    DAYS_OF_THE_WEEK = (
+        ('1', 'SUNDAY'),
+        ('2', 'MONDAY'),
+        ('3', 'TUESDAY'),
+        ('4', 'WEDNESDAY'),
+        ('5', 'THURSDAY'),
+        ('6', 'FRIDAY'),
+        ('7', 'SATURDAY')
+    )
+    #course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    day = models.CharField(max_length=1, choices=DAYS_OF_THE_WEEK)
+    
+    def __str__(self):
+        return self.get_day_display()
+
+    class Meta:
+        verbose_name = 'TIMETABLE'
+        verbose_name_plural = 'TIMETABLE'
+class TimeTableItem(models.Model):
+    #time_table = models.ForeignKey(TimeTable, on_delete=models.CASCADE)
+    #subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(FuldemyUser, on_delete=models.CASCADE)
+    time_table = models.ManyToManyField(TimeTable,blank=True, null=True)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    #def __str__(self):
+        #return 'timetable:'.format(self.subject, self.teacher, self.start_time, self.end_time)
+
+    #class Meta:
+        #ordering = ('start_time',)
+
 ################################################################################
 
 #Kritika's code

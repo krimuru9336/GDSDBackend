@@ -1,4 +1,4 @@
-from .models import FuldemyUser,ActiveClasses,Skills
+from .models import FuldemyUser,ActiveClasses,Skills,TimeTableItem
 from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
@@ -31,6 +31,12 @@ class  MyTokenObtainPairSerializer(TokenObtainPairSerializer):
          data["role"] = role
          return data
 '''        
+
+
+class TimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TimeTableItem
+        fields = ['time_table','teacher','start_time','end_time','id']
 
 
 class SkillsSerializer(serializers.ModelSerializer):
@@ -265,4 +271,4 @@ class AdminSerializer(ModelSerializer):
 class AdminUpdSerializer(ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ('email', 'id', 'CV','is_teacher','is_active_teacher')    
+        fields = ('email', 'id', 'CV','is_teacher','is_active_teacher','is_admin')    

@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.fields import EmailField
 from rest_framework.permissions import AllowAny
@@ -5,12 +6,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import uuid
 from rest_framework import generics, serializers, status
-from .serializers import GetByTutorSerializer, RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer,SkillsSerializer,AdminSerializer,AdminUpdSerializer
+from .serializers import GetByTutorSerializer, RegistrationTutorSerializer,RegistrationStudentSerializer,TutorsSerializer,RegistrationAdminSerializer,UpdateUserSerializer,DetailSerializer,DetailauthSerializer,ActiveClassesSerializer,SkillsSerializer,AdminSerializer,AdminUpdSerializer,TimeSerializer
 
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.parsers import MultiPartParser,FormParser
-from .models import FuldemyUser,ActiveClasses,Skills
+from .models import FuldemyUser,ActiveClasses,Skills,TimeTableItem
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -283,4 +284,29 @@ class AdminCVCheckView(APIView):
             return Response({ "data": serializer.data})
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+##############################Timetable ##############################################################
 
+class TimeView(APIView):
+
+    def get(self,request, id=None):
+        if id: 
+            item = TimeTableItem.objects.get(id=id)
+            serializer = TimeSerializer(item)
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+
+        queryset = TimeTableItem.objects.all()
+        serializer_class = TimeSerializer(queryset,many=True)
+        return Response(serializer_class.data)
+
+    def patch(self, request):
+        serializer = TimeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        timeid = get_object_or_404(TimeTableItem, id=id)
+        timeid.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

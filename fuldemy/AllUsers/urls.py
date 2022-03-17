@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import GetActiveClassesByTutor, RegistrationAPIView,RegistrationStudentAPIView,TutorsView,FilteredTutorsView,UserAvatarUpload,ActiveClassesView,SkillsView,AdminCVCheckView
+from .views import GetActiveClassesByTutor, RegistrationAPIView,RegistrationStudentAPIView,TutorsView,FilteredTutorsView,UserAvatarUpload,ActiveClassesView,SkillsView,AdminCVCheckView,TimeView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -35,8 +35,9 @@ urlpatterns = [
     path('skills/<int:id>',SkillsView.as_view()),
     path(r'checkCV/',AdminCVCheckView.as_view()),
     path(r'checkCV/<int:id>',AdminCVCheckView.as_view()),
-
-    ####################### Chat #########################################################
+    path(r'tutor/timetable/',TimeView.as_view()),
+    path(r'tutor/timetable/<str:id>',TimeView.as_view()),
+####################### Chat #########################################################
     path('', login_required(
         TemplateView.as_view(template_name='core/chat.html')), name='home'),
     path(r'messageurl/', include(router.urls)),
