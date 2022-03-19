@@ -290,7 +290,7 @@ class TimeView(APIView):
 
     def get(self,request, id=None):
         if id: 
-            item = TimeTableItem.objects.get(id=id)
+            item = TimeTableItem.objects.filter(tutor_id=id)
             serializer = TimeSerializer(item)
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
