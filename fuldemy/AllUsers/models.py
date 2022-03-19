@@ -236,7 +236,7 @@ class TimeTableItem(models.Model):
     #subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     #teacher = models.ForeignKey(FuldemyUser, on_delete=models.CASCADE)
     #time_table = models.ManyToManyField(TimeTable,blank=True, null=True)
-    tutor_name = models.ForeignKey(FuldemyUser, on_delete=models.CASCADE)
+    tutor_id = models.ForeignKey(FuldemyUser, on_delete=models.CASCADE)
     days_of_the_week = models.ForeignKey(TimeTable,on_delete=models.CASCADE)
     start_time = models.TimeField()
     end_time = models.TimeField()
