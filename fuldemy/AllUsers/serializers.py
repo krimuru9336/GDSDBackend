@@ -36,7 +36,7 @@ class  MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class TimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeTableItem
-        fields = ['time_table','teacher','start_time','end_time','id']
+        fields = ['days_of_the_week','tutor_name','start_time','end_time','id']
 
 
 class SkillsSerializer(serializers.ModelSerializer):
