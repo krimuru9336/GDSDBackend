@@ -57,7 +57,7 @@ class DetailauthSerializer(serializers.ModelSerializer):
 class TutorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['id','email','first_name','last_name','address','DOB','phone_number','password','CV','skills_present','skills_text','is_student','is_teacher']
+        fields = ['id','email','first_name','last_name','address','DOB','phone_number','password','CV','skills_present','skills_text','is_student','is_teacher','is_admin']
 
 class RegistrationTutorSerializer(serializers.ModelSerializer):
 
@@ -209,7 +209,7 @@ class Serializer_UpdateUser(serializers.ModelSerializer):
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['id','profile_pic','DOB','phone_number','first_name','last_name','address','email','password','skills_present','skills_text','CV','profile_pic','is_student','is_teacher'] 
+        fields = ['id','profile_pic','DOB','phone_number','first_name','last_name','address','email','password','skills_present','skills_text','CV','profile_pic','is_student','is_teacher','is_admin'] 
 
 ################################Krithika################################################
 
