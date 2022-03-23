@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'AllUsers',
+    'channels',
     'rest_framework',
     'rest_framework_simplejwt',
     'django_extensions',
@@ -86,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'fuldemy.wsgi.application'
+ASGI_APPLICATION = 'fuldemy.routing.application'
 
 
 # Database
@@ -189,34 +190,7 @@ MESSAGES_TO_LOAD = 15
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
-# Collect static files here
-STATIC_ROOT = join(PROJECT_ROOT, 'run', 'static_root')
 
-# Collect media files here
-MEDIA_ROOT = join(PROJECT_ROOT, 'run', 'media_root')
-MEDIA_URL = '/media/'
-
-# look for static assets here
-STATICFILES_DIRS = [
-    join(PROJECT_ROOT, 'static'),
-]
-
-STATIC_URL = '/static/'
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/login/'
-
-ALLOWED_HOSTS = ['*']
-
-# Import local_settings.py
-try:
-    from local_settings import *
-except ImportError:
-    pass
-
-ASGI_APPLICATION = 'chat.routing.application'
-ASGI_APPLICATION = 'chat.routing.application'
 CHANNEL_LAYERS={
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
