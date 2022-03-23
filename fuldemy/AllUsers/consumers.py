@@ -7,7 +7,7 @@ import json
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        user_id = self.scope["session"]["_auth_user_id"]
+        user_id = self.scope["user"]
         self.group_name = "{}".format(user_id)
         # Join room group
 
