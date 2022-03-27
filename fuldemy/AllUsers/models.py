@@ -164,6 +164,7 @@ class FuldemyUser(AbstractBaseUser, PermissionsMixin):
         skills_present = models.ManyToManyField('AllUsers.Skills',blank=True, null=True)
         #skills_present = models.ForeignKey(Skills, on_delete=models.CASCADE)
         skills_text = models.CharField(max_length=255,default="",blank=True)
+        price_hourly_in_eur= models.FloatField(default=0.0)
 
         objects = UserManager()
 
