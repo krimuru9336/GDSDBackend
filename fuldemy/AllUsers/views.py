@@ -199,14 +199,19 @@ class UserAvatarUpload(APIView):
     def patch(self, request):
         serializer1 = self.serializer_class(request.user)
         email1=serializer1.data['email']
-        #search=request.query_params["email"]
         item = FuldemyUser.objects.get(email=email1)
         serializer = UpdateUserSerializer(item,data=request.data,partial=True)
         if serializer.is_valid():
-            serializer.save()
-            return Response({ "data": serializer.data})
+          if 'profile_pic' in serializer.validated_data.keys():
+            serializer.validated_data['is_active_teacher'] = False
+            #serializer.data.is_active_teacher = True 
+          if 'CV' in serializer.validated_data.keys():
+            serializer.validated_data['is_active_teacher'] = False
+          serializer.save()
+          return Response({ "data": serializer.data})
         else:
             return Response({"status": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
 ################################################################################
 #Kritika's code
