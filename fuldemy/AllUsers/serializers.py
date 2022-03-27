@@ -46,12 +46,12 @@ class SkillsSerializer(serializers.ModelSerializer):
 class DetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['id','email','first_name','last_name','skills_present','skills_text','profile_pic']
+        fields = ['id','email','first_name','last_name','skills_present','skills_text','profile_pic','price_hourly_in_eur']
 
 class DetailauthSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['id','email','first_name','last_name','address','DOB','phone_number','CV','skills_present','skills_text','profile_pic']
+        fields = ['id','email','first_name','last_name','address','DOB','phone_number','CV','skills_present','skills_text','profile_pic','price_hourly_in_eur']
 
 
 class TutorsSerializer(serializers.ModelSerializer):
@@ -209,7 +209,7 @@ class Serializer_UpdateUser(serializers.ModelSerializer):
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['id','profile_pic','DOB','phone_number','first_name','last_name','address','email','password','skills_present','skills_text','CV','profile_pic','is_student','is_teacher','is_admin'] 
+        fields = ['id','profile_pic','DOB','phone_number','first_name','last_name','address','email','password','skills_present','skills_text','CV','profile_pic','is_student','is_teacher','is_admin','is_active_teacher','price_hourly_in_eur'] 
 
 ################################Krithika################################################
 
