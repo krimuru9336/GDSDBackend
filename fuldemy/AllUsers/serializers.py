@@ -46,7 +46,7 @@ class SkillsSerializer(serializers.ModelSerializer):
 class DetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = FuldemyUser
-        fields = ['id','email','first_name','last_name','skills_present','skills_text','profile_pic','price_hourly_in_eur']
+        fields = ['id','email','first_name','last_name','skills_present','skills_text','profile_pic','price_hourly_in_eur','DOB','phone_number','CV']
 
 class DetailauthSerializer(serializers.ModelSerializer):
     class Meta:
